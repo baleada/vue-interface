@@ -2,11 +2,16 @@
   <!-- Attributes like name etc. will fall through to this root element -->
   <!-- TODO: support anchor elements -->
   <button
-    class="baleada-interface-button"
-    style="position: relative;"
-    @click="setPointAndHandleClick"
+    class="baleada-baleada-button"
+    :style="styles"
+    @click="setPositionAndHandleClick"
+    ref="baleada"
   >
-    <HapticCircle />
+    <HapticCircle
+      v-if="hasHapticShape"
+      :baseOpacity="hapticShapeBaseOpacity"
+      :maxScale="hapticShapeMaxScale"
+    />
     <slot />
   </button>
 </template>
@@ -21,32 +26,43 @@ export default {
     HapticCircle,
   },
   props: {
-    // hapticDuration: {
-    //   type: Number,
-    // },
-    // hapticTiming: {
-    //   type: Array,
-    // },
+    hasHapticShape: {
+      type: Boolean,
+      default: false,
+    },
+    hapticShapeBaseOpacity: {
+      type: Number,
+    },
+    hapticShapeMaxScale: {
+      type: Number,
+    },
     handleClick: {
       type: Function,
       required: true,
     },
   },
   setup (props) {
-    const eventPoint = ref({ x: 0, y: 0 })
+    const baleada = ref(null),
+          eventPosition = ref({ x: 0, y: 0 })
     
-    function setPointAndHandleClick (event) {
-      const { x, y } = event
-      eventPoint.value = { x, y }
+    function setPositionAndHandleClick (event) {
+      const { clientX, clientY } = event,
+            { x, y } = baleada.value.getBoundingClientRect(),
+            left = clientX - x,
+            top = clientY - y
+
+      eventPosition.value = { left, top }
       props.handleClick(event)
     }
 
-    provide('eventPoint', eventPoint)
+    provide('eventPosition', eventPosition)
+
+    const styles = props.hasHapticShape ? { position: 'relative' } : {}
 
     return {
-      setPointAndHandleClick,
-      // hapticDuration: props.hapticDuration,
-      // hapticTiming: props.hapticTiming,
+      baleada,
+      setPositionAndHandleClick,
+      styles,
     }
   }
 }

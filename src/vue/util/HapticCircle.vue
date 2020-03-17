@@ -5,57 +5,59 @@
     viewBox="0 0 100 100"
     preserveAspectRatio="xMinYMin meet"
     ref="circle"
-    style="position: absolute; transform: scale(0);"
+    style="position: absolute; width: 100%; transform: translate(-50%, -50%) scale(0); transform-origin: center;"
   >
     <circle cx="50" cy="50" r="50" />
   </svg>
 </template>
 
 <script>
-import { ref, watch, inject, onMounted } from '@vue/composition-api'
+import { ref, watch, inject } from '@vue/composition-api'
 
 import { useAnimateable } from '@baleada/composition/vue'
 
 export default {
   props: {
-    duration: {
+    baseOpacity: {
       type: Number,
-      default: 100,
+      default: 0.25,
     },
-    timing: {
-      type: Array,
-      // Default to linear as per Animateable
-    },
+    maxScale: {
+      type: Number,
+      default: 2.83, // Will cover the diagonal of a square
+    }
   },
   setup (props) {
     const circle = ref(null),
-          grow = useAnimateable(
+          haptics = useAnimateable(
             [
-              { progress: 0, data: { scale: 0 } },
-              { progress: 1, data: { scale: 1 } },
-            ],
-            { duration: props.duration }
-          ),
-          eventPoint = inject('eventPoint')
+              // Scale
+              { progress: 0.0, data: { scale: 0 } },
+              { progress: 0.6, data: { scale: props.maxScale } },
 
-    watch(eventPoint, () => {
-      console.log(circle.value)
+              // Opacity
+              { progress: 0.00, data: { opacity: 0 } },
+              { progress: 0.15, data: { opacity: 1 } },
+              { progress: 0.60, data: { opacity: 1 } },
+              { progress: 1.00, data: { opacity: 0 } },
+            ],
+            { duration: 350 }
+          ),
+          eventPosition = inject('eventPosition')
+
+    watch(() => eventPosition.value.left + eventPosition.value.top, () => {
       if (circle.value !== null) {
-        circle.value.style.left = `${eventPoint.value.x}px`
-        circle.value.style.top = `${eventPoint.value.y}px`
-        grow.value.play(handleFrame)
+        circle.value.style.left = `${eventPosition.value.left}px`
+        circle.value.style.top = `${eventPosition.value.top}px`
+        haptics.value.stop()
+        haptics.value.play(handleFrame)
       }
     })
 
-    onMounted(() => {
-      circle.value.style.left = `${eventPoint.value.x}px`
-      circle.value.style.top = `${eventPoint.value.y}px`
-      grow.value.play(handleFrame)
-    })
-
     function handleFrame (frame) {
-      const { data: { scale } } = frame
-      circle.value.transform = `scale(${scale})`
+      const { data: { scale, opacity } } = frame
+      circle.value.style.transform = `translate(-50%, -50%) scale(${scale})`
+      circle.value.style.opacity = opacity * props.baseOpacity
     }
 
     return {
