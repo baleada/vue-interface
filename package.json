@@ -1,0 +1,42 @@
+{
+  "name": "@baleada/interface",
+  "version": "0.0.0",
+  "description": "User interface components for the Baleada toolkit",
+  "scripts": {
+    "prepare": "node scripts/prepare.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/baleada/interface.git"
+  },
+  "keywords": [
+    "baleada",
+    "user interface",
+    "components",
+    "accessible"
+  ],
+  "author": "Alex Vipond",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://gitlab.com/baleada/interface/issues"
+  },
+  "homepage": "https://baleada.netlify.com",
+  "sideEffects": false,
+  "devDependencies": {
+    "@babel/cli": "^7.7.0",
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "@rollup/plugin-node-resolve": "^6.0.0",
+    "fast-async": "^6.3.8",
+    "rollup-plugin-babel": "^4.3.3",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-vue": "^5.1.2",
+    "vue-loader": "^15.7.2",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "dependencies": {},
+  "peerDependencies": {
+    "@baleada/composition": "0.x",
+    "@baleada/icons": "0.x"
+  }
+}
