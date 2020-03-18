@@ -4,12 +4,12 @@
   <button
     class="baleada-baleada-button"
     :style="styles"
-    @click="setPositionAndHandleClick"
+    @click="handleClick"
     ref="baleada"
   >
     <HapticCircle
       v-if="hasHapticShape"
-      :baseOpacity="hapticShapeBaseOpacity"
+      :maxOpacity="hapticShapeMaxOpacity"
       :maxScale="hapticShapeMaxScale"
     />
     <slot />
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { ref, provide } from '@vue/composition-api'
+import { ref, provide, getCurrentInstance } from '@vue/composition-api'
 
 import HapticCircle from '../util/HapticCircle.vue'
 
@@ -30,29 +30,30 @@ export default {
       type: Boolean,
       default: false,
     },
-    hapticShapeBaseOpacity: {
+    hapticShapeMaxOpacity: {
       type: Number,
     },
     hapticShapeMaxScale: {
       type: Number,
     },
-    handleClick: {
-      type: Function,
-      required: true,
-    },
   },
-  setup (props) {
+  setup (props, { attrs }) {
     const baleada = ref(null),
+          onClick = getCurrentInstance().$listeners.click,
           eventPosition = ref({ x: 0, y: 0 })
     
-    function setPositionAndHandleClick (event) {
+    function handleClick (event) {
       const { clientX, clientY } = event,
             { x, y } = baleada.value.getBoundingClientRect(),
             left = clientX - x,
             top = clientY - y
 
       eventPosition.value = { left, top }
-      props.handleClick(event)
+      
+      // TODO: Extract this for use in checkbox and other stuff
+      if (typeof onClick === 'function') {
+        onClick(event)
+      }
     }
 
     provide('eventPosition', eventPosition)
@@ -61,7 +62,7 @@ export default {
 
     return {
       baleada,
-      setPositionAndHandleClick,
+      handleClick,
       styles,
     }
   }

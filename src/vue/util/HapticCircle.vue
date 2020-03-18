@@ -18,7 +18,7 @@ import { useAnimateable } from '@baleada/composition/vue'
 
 export default {
   props: {
-    baseOpacity: {
+    maxOpacity: {
       type: Number,
       default: 0.25,
     },
@@ -57,7 +57,7 @@ export default {
     function handleFrame (frame) {
       const { data: { scale, opacity } } = frame
       circle.value.style.transform = `translate(-50%, -50%) scale(${scale})`
-      circle.value.style.opacity = opacity * props.baseOpacity
+      circle.value.style.opacity = opacity * props.maxOpacity
     }
 
     return {
