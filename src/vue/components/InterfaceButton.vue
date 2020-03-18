@@ -32,9 +32,11 @@ export default {
     },
     hapticShapeMaxOpacity: {
       type: Number,
+      default: 0.25,
     },
     hapticShapeMaxScale: {
       type: Number,
+      default: 2,
     },
   },
   setup (props, { attrs }) {

@@ -20,11 +20,11 @@ export default {
   props: {
     maxOpacity: {
       type: Number,
-      default: 0.25,
+      default: 0,
     },
     maxScale: {
       type: Number,
-      default: 2.83, // Will cover the diagonal of a square
+      default: 0,
     }
   },
   setup (props) {
