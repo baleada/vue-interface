@@ -8,9 +8,11 @@
     ref="baleada"
   >
     <HapticCircle
-      v-if="hasHapticShape"
-      :maxOpacity="hapticShapeMaxOpacity"
-      :maxScale="hapticShapeMaxScale"
+      v-if="hasHaptics"
+      :maxOpacity="hapticsMaxOpacity"
+      :maxScale="hapticsMaxScale"
+      :duration="hapticsDuration"
+      :timing="hapticsTiming"
     />
     <slot />
   </button>
@@ -26,17 +28,24 @@ export default {
     HapticCircle,
   },
   props: {
-    hasHapticShape: {
+    hasHaptics: {
       type: Boolean,
       default: false,
     },
-    hapticShapeMaxOpacity: {
+    hapticsMaxOpacity: {
       type: Number,
       default: 0.25,
     },
-    hapticShapeMaxScale: {
+    hapticsMaxScale: {
       type: Number,
       default: 2,
+    },
+    hapticsDuration: {
+      type: Number,
+      default: 350,
+    },
+    hapticsTiming: {
+      type: Array,
     },
   },
   setup (props, { attrs }) {
@@ -60,7 +69,7 @@ export default {
 
     provide('eventPosition', eventPosition)
 
-    const styles = props.hasHapticShape ? { position: 'relative' } : {}
+    const styles = props.hasHaptics ? { position: 'relative' } : {}
 
     return {
       baleada,

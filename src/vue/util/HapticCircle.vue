@@ -25,7 +25,13 @@ export default {
     maxScale: {
       type: Number,
       default: 0,
-    }
+    },
+    duration: {
+      type: Array,
+    },
+    timing: {
+      type: Array,
+    },
   },
   setup (props) {
     const circle = ref(null),
@@ -33,15 +39,15 @@ export default {
             [
               // Scale
               { progress: 0.0, data: { scale: 0 } },
-              { progress: 0.6, data: { scale: props.maxScale } },
+              { progress: 0.75, data: { scale: props.maxScale } },
 
               // Opacity
               { progress: 0.00, data: { opacity: 0 } },
-              { progress: 0.15, data: { opacity: 1 } },
-              { progress: 0.60, data: { opacity: 1 } },
+              { progress: 0.25, data: { opacity: 1 } },
+              { progress: 0.75, data: { opacity: 1 } },
               { progress: 1.00, data: { opacity: 0 } },
             ],
-            { duration: 350 }
+            { duration: props.duration, timing: props.timing }
           ),
           eventPosition = inject('eventPosition')
 
