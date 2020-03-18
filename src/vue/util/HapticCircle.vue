@@ -5,7 +5,7 @@
     viewBox="0 0 100 100"
     preserveAspectRatio="xMinYMin meet"
     ref="circle"
-    style="position: absolute; width: 100%; transform: translate(-50%, -50%) scale(0); transform-origin: center;"
+    style="position: absolute; width: 100%; transform: translate(-50%, -50%) scale(0); transform-origin: center; pointer-events: none;"
   >
     <circle cx="50" cy="50" r="50" />
   </svg>
