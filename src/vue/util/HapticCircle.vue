@@ -14,6 +14,8 @@
 <script>
 import { ref, watch, inject } from '@vue/composition-api'
 
+import { useSymbol } from '../composition'
+
 import { useAnimateable } from '@baleada/composition/vue'
 
 export default {
@@ -49,7 +51,7 @@ export default {
             ],
             { duration: props.duration, timing: props.timing }
           ),
-          eventPosition = inject('eventPosition')
+          eventPosition = inject(useSymbol('button', 'eventPosition')) // TODO: This makes HapticCircle too button-specific
 
     watch(() => eventPosition.value.left + eventPosition.value.top, () => {
       if (circle.value !== null) {
