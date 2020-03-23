@@ -10,8 +10,8 @@ export default {
     'vue',
   ],
   input: [
-    'src/vue/index.js',
-    'src/vue/plugin.js',
+    'src/index.js',
+    'src/plugin.js',
   ],
   output: {
     dir: 'lib',
