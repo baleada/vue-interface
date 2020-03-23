@@ -1,20 +1,14 @@
-const generateIndex = require('./generateIndex'),
-      generateFrameworkIndices = require('./generateFrameworkIndices'),
+const { generateIndex } = require('@baleada/prepare'),
       generatePropsInterfaces = require('./generatePropsInterfaces')
-      compileFramework = require('./compileFramework')
-      // fs = require('fs')
+      compile = require('./compile')
 
 function prepare () {
   /* Index all */
-  generateIndex('./src/vue/util')
-  // generateIndex('./src/vue/stubs')
-  generateFrameworkIndices('vue')
-
-  /* Props Interfaces */
-  // generatePropsInterfaces('vue')
+  generateIndex('./src')
+  generateIndex('./src/util')
 
   /* Compile */
-  compileFramework('vue')
+  compile()
 }
 
 prepare()

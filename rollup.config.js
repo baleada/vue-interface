@@ -5,17 +5,16 @@ import resolve from '@rollup/plugin-node-resolve'
 export default {
   external: [
     '@vue/composition-api',
-    '@baleada/icons/vue',
-    '@baleada/composition/vue',
+    '@baleada/icons-vue',
+    '@baleada/composition-vue',
     'vue',
   ],
   input: [
     'src/vue/index.js',
     'src/vue/plugin.js',
-    // 'src/vue/propsInterfaces.js',
   ],
   output: {
-    dir: 'vue',
+    dir: 'lib',
     format: 'esm',
   },
   plugins: [
