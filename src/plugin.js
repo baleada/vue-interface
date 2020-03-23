@@ -20,7 +20,7 @@ function installComponents (Vue, options) {
   components.forEach(component => {
     const name = component.name,
           callback = dynamic
-            ? (resolve, reject) => resolve(component)
+            ? resolve => resolve(component)
             : component
 
     Vue.component(name, callback)

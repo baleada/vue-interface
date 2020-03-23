@@ -22,7 +22,7 @@
 import { ref, provide, getCurrentInstance } from '@vue/composition-api'
 
 import HapticCircle from '../util/HapticCircle.vue'
-import { useSymbol } from '../composition'
+import { useSymbol } from '../symbols'
 
 export default {
   components: {
