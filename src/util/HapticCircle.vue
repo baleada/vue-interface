@@ -29,7 +29,7 @@ export default {
       default: 0,
     },
     duration: {
-      type: Array,
+      type: Number,
     },
     timing: {
       type: Array,
