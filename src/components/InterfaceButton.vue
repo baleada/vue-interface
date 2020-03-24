@@ -43,7 +43,7 @@ export default {
     },
     hapticsDuration: {
       type: Number,
-      default: 350,
+      default: 450,
     },
     hapticsTiming: {
       type: Array,
