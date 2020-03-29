@@ -1,8 +1,7 @@
 <template>
-  <!-- Attributes like name etc. will fall through to this root element -->
-  <!-- TODO: support anchor elements -->
+  <!-- Attrs and listeners fall through to the button automatically -->
   <button
-    class="baleada-baleada-button"
+    class="baleada-interface-button"
     :style="styles"
     @click="handleClick"
     ref="baleada"
@@ -13,8 +12,16 @@
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
       :timing="hapticsTiming"
+      :class="descendant1Classes"
+      :style="descendant1Styles"
     />
-    <slot />
+    <section
+      class="contents"
+      :class="descendant2Classes"
+      :style="descendant2Styles"
+    >
+      <slot />
+    </section>
   </button>
 </template>
 
@@ -47,6 +54,22 @@ export default {
     },
     hapticsTiming: {
       type: Array,
+    },
+    descendant1Classes: {
+      type: String,
+      default: '',
+    },
+    descendant1Styles: {
+      type: String,
+      default: '',
+    },
+    descendant2Classes: {
+      type: String,
+      default: '',
+    },
+    descendant2Styles: {
+      type: String,
+      default: '',
     },
   },
   setup (props, { attrs }) {
