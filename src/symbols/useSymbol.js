@@ -2,6 +2,10 @@ const symbols = {
   button: {
     eventPosition: Symbol('eventPosition'),
   },
+  string: {
+    eventPosition: Symbol('eventPosition'),
+    status: Symbol('status'),
+  },
 }
 
 export default function useSymbol (collection, name) {

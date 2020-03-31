@@ -3,7 +3,7 @@
     role="img"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
-    preserveAspectRatio="xMinYMin meet"
+    preserveAspectRatio="none"
     ref="circle"
     style="position: absolute; width: 100%; transform: translate(-50%, -50%) scale(0); transform-origin: center; pointer-events: none;"
   >

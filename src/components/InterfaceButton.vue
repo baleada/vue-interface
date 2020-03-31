@@ -4,6 +4,7 @@
     class="baleada-interface-button"
     :style="styles"
     @click="handleClick"
+    @keydown.space="handleSpace"
     ref="baleada"
   >
     <HapticCircle
@@ -32,6 +33,7 @@ import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
 
 export default {
+  name: 'InterfaceButton',
   components: {
     HapticCircle,
   },
@@ -60,16 +62,16 @@ export default {
       default: '',
     },
     descendant1Styles: {
-      type: String,
-      default: '',
+      type: Object,
+      default: () => ({}),
     },
     descendant2Classes: {
       type: String,
       default: '',
     },
     descendant2Styles: {
-      type: String,
-      default: '',
+      type: Object,
+      default: () => ({}),
     },
   },
   setup (props, { attrs }) {
@@ -91,6 +93,13 @@ export default {
       }
     }
 
+    function handleSpace (evt) {
+      eventPosition.value = {
+        left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change regardless of previous click position
+        top: eventPosition.value.top === 0 ? 1 : 0,
+      }
+    }
+
     provide(useSymbol('button', 'eventPosition'), eventPosition)
 
     const styles = props.hasHaptics ? { position: 'relative' } : {}
@@ -98,6 +107,7 @@ export default {
     return {
       baleada,
       handleClick,
+      handleSpace,
       styles,
     }
   }

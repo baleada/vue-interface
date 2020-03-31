@@ -3,11 +3,13 @@
     role="img"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 100 100"
-    preserveAspectRatio="xMinYMin meet"
-    ref="circle"
-    style="position: absolute; width: 100%; transform: translate(-50%, -50%) scale(0); transform-origin: center; pointer-events: none;"
+    preserveAspectRatio="none"
+    ref="hapticShape"
+    style="position: absolute; width: 100%; translateX(-50%) scaleX(0); transform-origin: center; pointer-events: none;"
+    :style="{ [align]: '0px' }"
+    v-show="status === 'focused'"
   >
-    <rect cx="50" cy="50" r="50" />
+    <rect height="100" width="100" />
   </svg>
 </template>
 
@@ -20,9 +22,10 @@ import { useAnimateable } from '@baleada/composition-vue'
 
 export default {
   props: {
-    maxOpacity: {
-      type: Number,
-      default: 0,
+    align: {
+      type: String,
+      default: 'bottom',
+      validator: align => ['top', 'bottom'].includes(align)
     },
     maxScale: {
       type: Number,
@@ -36,40 +39,40 @@ export default {
     },
   },
   setup (props) {
-    const circle = ref(null),
+    const hapticShape = ref(null),
           haptics = useAnimateable(
             [
-              // Scale
-              { progress: 0.0, data: { scale: 0 } },
-              { progress: 0.50, data: { scale: props.maxScale } },
-
-              // Opacity
-              { progress: 0.00, data: { opacity: 0 } },
-              { progress: 0.10, data: { opacity: 1 } },
-              { progress: 0.60, data: { opacity: 1 } },
-              { progress: 1.00, data: { opacity: 0 } },
+              // Scale X
+              { progress: 0.0, data: { scaleX: 0 } },
+              { progress: 1.0, data: { scaleX: props.maxScale } },
             ],
             { duration: props.duration, timing: props.timing }
           ),
-          eventPosition = inject(useSymbol('button', 'eventPosition')) // TODO: This makes HapticCircle too button-specific
+          eventPosition = inject(useSymbol('string', 'eventPosition')), // TODO: This makes Haptics too string-specific
+          status = inject(useSymbol('string', 'status')) // TODO: This makes Haptics too string-specific
 
     watch(() => eventPosition.value.left + eventPosition.value.top, () => {
-      if (circle.value !== null) {
-        circle.value.style.left = `${eventPosition.value.left}px`
-        circle.value.style.top = `${eventPosition.value.top}px`
+      if (hapticShape.value !== null) {
         haptics.value.stop()
+        hapticShape.value.style.left = `${eventPosition.value.left}px`
         haptics.value.play(handleFrame)
       }
     })
 
+    watch(() => {
+      if (status.value === 'blurred') {
+        hapticShape.value.style.transform = 'translateX(-50%) scaleX(0)'
+      }
+    })
+
     function handleFrame (frame) {
-      const { data: { scale, opacity } } = frame
-      circle.value.style.transform = `translate(-50%, -50%) scale(${scale})`
-      circle.value.style.opacity = opacity * props.maxOpacity
+      const { data: { scaleX } } = frame
+      hapticShape.value.style.transform = `translateX(-50%) scaleX(${scaleX})`
     }
 
     return {
-      circle
+      hapticShape,
+      status,
     }
   }
 }
