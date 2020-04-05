@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { ref, watch, inject } from '@vue/composition-api'
+import { ref, watch, watchEffect, inject } from '@vue/composition-api'
 
 import { useSymbol } from '../symbols'
 
@@ -59,7 +59,7 @@ export default {
       }
     })
 
-    watch(() => {
+    watchEffect(() => {
       if (status.value === 'blurred') {
         hapticShape.value.style.transform = 'translateX(-50%) scaleX(0)'
       }
