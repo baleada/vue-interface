@@ -1,5 +1,3 @@
-
-
 <template>
   <section 
     class="baleada-interface-string"
@@ -20,7 +18,7 @@
       :type="type"
       v-on="{
         ...listeners,
-        click: handleClick,
+        mousedown: handleMousedown,
         focus: handleFocus,
         blur: handleBlur,
       }"
@@ -32,7 +30,7 @@
       v-if="type === 'textarea'"
       v-on="{
         ...listeners,
-        click: handleClick,
+        mousedown: handleMousedown,
         focus: handleFocus,
         blur: handleBlur,
       }"
@@ -122,7 +120,7 @@ export default {
           eventPosition = ref({ x: 0, y: 0 }),
           status = ref('ready')
     
-    function handleClick (event) {
+    function handleMousedown (event) {
       const { clientX, clientY } = event,
             { x, y } = baleada.value.getBoundingClientRect(),
             left = clientX - x,
@@ -168,7 +166,7 @@ export default {
       attrs,
       listeners,
       styles,
-      handleClick,
+      handleMousedown,
       handleFocus,
       handleBlur,
       status,

@@ -51,7 +51,7 @@ export default {
             ],
             { duration: props.duration, timing: props.timing }
           ),
-          eventPosition = inject(useSymbol('button', 'eventPosition')) // TODO: This makes HapticCircle too button-specific
+          eventPosition = inject(useSymbol('click', 'eventPosition')) // TODO: This makes HapticCircle too button-specific
 
     watch(() => eventPosition.value.left + eventPosition.value.top, () => {
       if (circle.value !== null) {

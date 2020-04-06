@@ -1,5 +1,5 @@
 const symbols = {
-  button: {
+  click: {
     eventPosition: Symbol('eventPosition'),
   },
   string: {

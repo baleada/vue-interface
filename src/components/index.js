@@ -1,2 +1,2 @@
-export { default as InterfaceButton } from './InterfaceButton.vue'
+export { default as InterfaceClick } from './InterfaceClick.vue'
 export { default as InterfaceString } from './InterfaceString.vue'

@@ -1,10 +1,14 @@
 <template>
   <!-- Attrs and listeners fall through to the button automatically -->
-  <button
-    class="baleada-interface-button"
+  <component :is="tag"
+    :class="`baleada-interface-${tag.toLowerCase()}`"
     :style="styles"
-    @click="handleClick"
-    @keydown.space="handleSpace"
+    v-bind="attrs"
+    v-on="{
+      ...listeners,
+      mousedown: handleMousedown,
+      ['keydown.space']: handleSpace,
+    }"
     ref="baleada"
   >
     <HapticCircle
@@ -23,21 +27,26 @@
     >
       <slot />
     </section>
-  </button>
+  </component>
 </template>
 
 <script>
-import { ref, provide, getCurrentInstance } from '@vue/composition-api'
+import { ref, computed, provide, getCurrentInstance } from '@vue/composition-api'
 
 import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
 
 export default {
-  name: 'InterfaceButton',
+  name: 'InterfaceClick',
   components: {
     HapticCircle,
   },
   props: {
+    tag: {
+      type: String,
+      default: 'button',
+      validator: tag => ['button', 'a', 'NuxtLink', 'RouterLink'].includes(tag)
+    },
     hasHaptics: {
       type: Boolean,
       default: false,
@@ -74,12 +83,14 @@ export default {
       default: () => ({}),
     },
   },
-  setup (props, { attrs }) {
+  setup (props) {
     const baleada = ref(null),
-          onClick = getCurrentInstance().$listeners.click,
+          attrs = computed(() => getCurrentInstance().$attrs),
+          listeners = computed(() => getCurrentInstance().$listeners), // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
+          onMousedown = listeners.mousedown,
           eventPosition = ref({ x: 0, y: 0 })
     
-    function handleClick (event) {
+    function handleMousedown (event) {
       const { clientX, clientY } = event,
             { x, y } = baleada.value.getBoundingClientRect(),
             left = clientX - x,
@@ -88,8 +99,8 @@ export default {
       eventPosition.value = { left, top }
       
       // TODO: Extract this for use in checkbox and other stuff
-      if (typeof onClick === 'function') {
-        onClick(event)
+      if (typeof onMousedown === 'function') {
+        onMousedown(event)
       }
     }
 
@@ -100,13 +111,15 @@ export default {
       }
     }
 
-    provide(useSymbol('button', 'eventPosition'), eventPosition)
+    provide(useSymbol('click', 'eventPosition'), eventPosition)
 
     const styles = props.hasHaptics ? { position: 'relative' } : {}
 
     return {
       baleada,
-      handleClick,
+      attrs,
+      listeners,
+      handleMousedown,
       handleSpace,
       styles,
     }
