@@ -5,8 +5,7 @@ import resolve from '@rollup/plugin-node-resolve'
 export default {
   external: [
     '@vue/composition-api',
-    // '@baleada/icons-vue',
-    '@baleada/composition-vue',
+    '@baleada/vue-composition',
     'vue',
   ],
   input: [

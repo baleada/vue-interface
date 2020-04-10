@@ -16,7 +16,7 @@ import { ref, watch, inject } from '@vue/composition-api'
 
 import { useSymbol } from '../symbols'
 
-import { useAnimateable } from '@baleada/composition-vue'
+import { useAnimateable } from '@baleada/vue-composition'
 
 export default {
   props: {

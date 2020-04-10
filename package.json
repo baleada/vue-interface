@@ -1,6 +1,6 @@
 {
-  "name": "@baleada/interface-vue",
-  "version": "0.2.4",
+  "name": "@baleada/vue-interface",
+  "version": "0.3.0",
   "description": "Vue user interface components for the Baleada toolkit",
   "main": "lib/index.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/baleada/interface-vue.git"
+    "url": "git+https://gitlab.com/baleada/vue-interface.git"
   },
   "keywords": [
     "baleada",
@@ -20,7 +20,7 @@
   "author": "Alex Vipond",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/baleada/interface-vue/issues"
+    "url": "https://gitlab.com/baleada/vue-interface/issues"
   },
   "homepage": "https://baleada.netlify.com",
   "sideEffects": false,
@@ -38,8 +38,7 @@
   },
   "dependencies": {},
   "peerDependencies": {
-    "@baleada/composition-vue": "0.x",
-    "@baleada/icons-vue": "0.x",
+    "@baleada/vue-composition": "0.x",
     "vue": "2.x",
     "@vue/composition-api": "0.x"
   }

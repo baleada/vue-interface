@@ -121,6 +121,7 @@ export default {
           status = ref('ready')
     
     function handleMousedown (event) {
+      status.value = 'focused'
       const { clientX, clientY } = event,
             { x, y } = baleada.value.getBoundingClientRect(),
             left = clientX - x,
@@ -135,10 +136,12 @@ export default {
     }
 
     function handleFocus (event) {
-      status.value = 'focused'
-      eventPosition.value = {
-        left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change when using keyboard to focus in and out
-        top: eventPosition.value.top === 0 ? 1 : 0,
+      if (status.value !== 'focused') {
+        status.value = 'focused'
+        eventPosition.value = {
+          left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change when using keyboard to focus in and out
+          top: eventPosition.value.top === 0 ? 1 : 0,
+        }
       }
 
       // TODO: Extract this for use in checkbox and other stuff
