@@ -13,6 +13,8 @@
   >
     <HapticCircle
       v-if="hasHaptics"
+      symbolCollection="click"
+      :baseWidth="hapticsBaseWidth"
       :maxOpacity="hapticsMaxOpacity"
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
@@ -98,7 +100,6 @@ export default {
 
       eventPosition.value = { left, top }
       
-      // TODO: Extract this for use in checkbox and other stuff
       if (typeof onMousedown === 'function') {
         onMousedown(event)
       }

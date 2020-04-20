@@ -5,7 +5,7 @@
     viewBox="0 0 100 100"
     preserveAspectRatio="none"
     ref="circle"
-    style="position: absolute; width: 100%; transform: translate(-50%, -50%) scale(0); transform-origin: center; pointer-events: none;"
+    style="position: absolute; transform: translate(-50%, -50%) scale(0); transform-origin: center; pointer-events: none;"
   >
     <circle cx="50" cy="50" r="50" />
   </svg>
@@ -20,6 +20,9 @@ import { useAnimateable } from '@baleada/vue-composition'
 
 export default {
   props: {
+    symbolCollection: {
+      type: String,
+    },
     maxOpacity: {
       type: Number,
       default: 0,
@@ -51,7 +54,7 @@ export default {
             ],
             { duration: props.duration, timing: props.timing }
           ),
-          eventPosition = inject(useSymbol('click', 'eventPosition')) // TODO: This makes HapticCircle too button-specific
+          eventPosition = inject(useSymbol(props.symbolCollection, 'eventPosition'))
 
     watch(() => eventPosition.value.left + eventPosition.value.top, () => {
       if (circle.value !== null) {

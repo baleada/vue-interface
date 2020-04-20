@@ -5,8 +5,18 @@
     :style="styles"
   >
     <HapticRectangle
-      v-if="hasHaptics"
+      v-if="hasHaptics && ['text', 'email', 'password'].includes(type)"
       :align="hapticsAlign"
+      :maxScale="hapticsMaxScale"
+      :duration="hapticsDuration"
+      :timing="hapticsTiming"
+      :class="descendant1Classes"
+      :style="descendant1Styles"
+    />
+    <HapticCircle
+      v-if="hasHaptics && type === 'textarea'"
+      symbolCollection="string"
+      :maxOpacity="hapticsMaxOpacity"
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
       :timing="hapticsTiming"
@@ -52,12 +62,14 @@
 import { getCurrentInstance, ref, computed, provide } from '@vue/composition-api'
 
 import HapticRectangle from '../util/HapticRectangle.vue'
+import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
 
 export default {
   name: 'InterfaceString',
   components: {
     HapticRectangle,
+    HapticCircle,
   },
   inheritAttrs: false,
   props: {
@@ -70,19 +82,23 @@ export default {
       type: Boolean,
       default: false,
     },
-    hapticsAlign: {
+    hapticsMaxOpacity: { // Circle only
+      type: Number,
+      default: 0.25,
+    },
+    hapticsAlign: { // Rectangle only
       type: String,
       default: 'bottom',
     },
-    hapticsMaxScale: {
+    hapticsMaxScale: { // Both circle and rectangle
       type: Number,
       default: 2.1,
     },
-    hapticsDuration: {
+    hapticsDuration: { // Both circle and rectangle
       type: Number,
       default: 400,
     },
-    hapticsTiming: {
+    hapticsTiming: { // Both circle and rectangle
       type: Array,
     },
     descendant1Classes: {
@@ -114,7 +130,7 @@ export default {
     const baleada = ref(null),
           attrs = computed(() => getCurrentInstance().$attrs),
           listeners = computed(() => getCurrentInstance().$listeners), // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
-          onClick = listeners.value.click,
+          onMousedown = listeners.value.mousedown,
           onFocus = listeners.value.focus,
           onBlur = listeners.value.blur,
           eventPosition = ref({ x: 0, y: 0 }),
@@ -129,9 +145,8 @@ export default {
 
       eventPosition.value = { left, top }
       
-      // TODO: Extract this for use in checkbox and other stuff
-      if (typeof onClick === 'function') {
-        onClick(event)
+      if (typeof onMousedown === 'function') {
+        onMousedown(event)
       }
     }
 
@@ -144,7 +159,6 @@ export default {
         }
       }
 
-      // TODO: Extract this for use in checkbox and other stuff
       if (typeof onFocus === 'function') {
         onFocus(event)
       }
@@ -153,7 +167,6 @@ export default {
     function handleBlur (event) {
       status.value = 'blurred'
 
-      // TODO: Extract this for use in checkbox and other stuff
       if (typeof onFocus === 'function') {
         onBlur(event)
       }
