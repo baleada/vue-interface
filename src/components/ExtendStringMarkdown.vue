@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { ref, watchEffect, onMounted, provide, inject } from '@vue/composition-api'
+import { ref, watchEffect, watch, onMounted, provide, inject } from '@vue/composition-api'
 import { useCompleteable, useListenable } from '@baleada/vue-composition'
 import { useSymbol } from '../symbols'
 
@@ -14,85 +14,117 @@ export default {
     const completeable = inject(useSymbol('string', 'completeable')),
           status = inject(useSymbol('string', 'status')),
           keycombos = inject(useSymbol('markdown', 'keycombos')),
-          set = () => completeable.value.setString(inline.value.string).setSelection(inline.value.selection)
+          set = c => completeable.value.setString(c.value.string).setSelection(c.value.selection)
 
     // Inline segment wrappers
     const inline = useCompleteable(completeable.value.string, { segments: { from: 'divider', to: 'divider' }, divider: /\s/ }),
           bold = {
             complete: () => {
-              inline.value.complete(`**${inline.value.segment}**`).string
-              set()
+              inline.value.complete(`**${inline.value.segment}**`)
+              set(inline)
             },
             keycombo: useListenable(keycombos.bold),
           },
           italic = {
             complete: () => {
-              inline.value.complete(`_${inline.value.segment}_`).string
-              set()
+              inline.value.complete(`_${inline.value.segment}_`)
+              set(inline)
             },
             keycombo: useListenable(keycombos.italic),
           },
           superscript = {
             complete: () => {
-              inline.value.complete(`^${inline.value.segment}^`).string
-              set()
+              inline.value.complete(`^${inline.value.segment}^`)
+              set(inline)
             },
             keycombo: useListenable(keycombos.superscript),
           },
           subscript = {
             complete: () => {
-              inline.value.complete(`~${inline.value.segment}~`).string
-              set()
+              inline.value.complete(`~${inline.value.segment}~`)
+              set(inline)
             },
             keycombo: useListenable(keycombos.subscript),
           },
           strikethrough = {
             complete: () => {
-              inline.value.complete(`~~${inline.value.segment}~~`).string
-              set()
+              inline.value.complete(`~~${inline.value.segment}~~`)
+              set(inline)
             },
             keycombo: useListenable(keycombos.strikethrough),
           },
-          inlineCode = {
+          code = {
             complete: () => {
-              inline.value.complete(`\`${inline.value.segment}\``).string
-              set()
+              inline.value.complete(`\`${inline.value.segment}\``)
+              set(inline)
             },
-            keycombo: useListenable(keycombos.inlineCode),
+            keycombo: useListenable(keycombos.code),
           },
           link = {
             complete: () => {
-              inline.value.complete(`[${inline.value.segment}]()`).string
-              set()
+              inline.value.complete(`[${inline.value.segment}]()`)
+              set(inline)
             },
             keycombo: useListenable(keycombos.link),
           }
 
-    watchEffect(() => inline.value.setString(completeable.value.string).setSelection(completeable.value.selection))
-
-    // onMounted(() => {
-    //   [bold, italic, superscript, subscript, strikethrough, inlineCode].forEach(inlineSegmentWrapper => {
-    //     inlineSegmentWrapper.keycombo.value.listen(event => inlineSegmentWrapper.complete(), { target: textarea.value })
-    //   })
-    // })
+    watchEffect(() => {
+      inline.value.setString(completeable.value.string).setSelection(completeable.value.selection)
+      console.log({
+        selection: inline.value.selection,
+        string: inline.value.string,
+        segment: inline.value.segment,
+      })
+    })
 
     // Block segment wrappers
-    const block = useCompleteable('', { segments: { from: 'divider', to: 'divider' }, divider: /\n/ })
-  
-    // codeFence
-    // blockquote
-    // table
-    // proseStuff
-    // image
+    const block = useCompleteable(completeable.value.string, { segments: { from: 'divider', to: 'divider' }, divider: /\n/m }),
+          codeblock = {
+            complete: () => {
+              block.value.complete(`\`\`\`\n${block.value.segment}\n\`\`\``)
+              set(block)
+            },
+            keycombo: useListenable(keycombos.codeblock),
+          },
+          blockquote = {
+            complete: () => {
+              block.value.complete(block.value.segment.split('\n').map(line => `> ${line}`).join('\n'))
+              set(block)
+            },
+            keycombo: useListenable(keycombos.blockquote),
+          }
+
+    watchEffect(() => block.value.setString(completeable.value.string).setSelection(completeable.value.selection))
+
+
+    // Listen for keycombos
+    const inputElement = inject(useSymbol('string', 'inputElement')),
+          keycomboStatus = ref('ready')
+
+    // onMounted alone wasn't working, but this workaround works
+    watch([inputElement, keycomboStatus], () => {
+      if (inputElement.value !== null) {
+        if (keycomboStatus.value !== 'listening') {
+          [bold, italic, superscript, subscript, strikethrough, code, link, codeblock, blockquote].forEach(inlineSegmentWrapper => {
+            inlineSegmentWrapper.keycombo.value.listen(event => inlineSegmentWrapper.complete(), { target: inputElement.value })
+          })
+        }
+      }
+    })
 
     const complete = {
+      // inline
       bold: bold.complete,
       italic: italic.complete,
       superscript: superscript.complete,
       subscript: subscript.complete,
       strikethrough: strikethrough.complete,
-      inlineCode: inlineCode.complete,
+      code: code.complete,
       link: link.complete,
+
+      // block
+      codeblock: codeblock.complete,
+      blockquote: blockquote.complete,
     }
 
     provide(useSymbol('markdown', 'complete'), complete)

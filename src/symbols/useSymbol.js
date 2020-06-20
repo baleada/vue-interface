@@ -6,6 +6,7 @@ const symbols = {
     eventPosition: Symbol('eventPosition'),
     status: Symbol('status'),
     completeable: Symbol('completeable'),
+    inputElement: Symbol('inputElement'),
   },
   markdown: {
     keycombos: Symbol('keycombos'),

@@ -185,6 +185,7 @@ export default {
     provide(useSymbol('string', 'eventPosition'), eventPosition)
     provide(useSymbol('string', 'status'), status)
     provide(useSymbol('string', 'completeable'), completeable)
+    provide(useSymbol('string', 'inputElement'), inputElement)
 
     const styles = props.hasHaptics ? ({ position: 'relative' }) : ({})
 
