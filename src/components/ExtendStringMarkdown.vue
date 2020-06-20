@@ -85,6 +85,42 @@ export default {
               propagate(block)
             },
             keycombo: useListenable(keycombos.blockquote),
+          },
+          orderedList = {
+            complete: () => {
+              block.value.complete(block.value.segment.split('\n').map(line => `1. ${line}`).join('\n'))
+              propagate(block)
+            },
+            keycombo: useListenable(keycombos.orderedList),
+          },
+          unorderedList = {
+            complete: () => {
+              block.value.complete(block.value.segment.split('\n').map(line => `- ${line}`).join('\n'))
+              propagate(block)
+            },
+            keycombo: useListenable(keycombos.unorderedList),
+          },
+          heading = {
+            complete: level => {
+              let hashes = ''
+              for (i = 0; i < level && i < 6; i++) {
+                hashes += '#'
+              }
+              block.value.complete(`${hashes} ${block.value.segment}`)
+              propagate(block)
+            },
+            keycombo: useListenable(keycombos.heading),
+          },
+          horizontalRule = {
+            complete: level => {
+              let hashes = ''
+              for (i = 0; i < level && i < 6; i++) {
+                hashes += '#'
+              }
+              block.value.complete(`${block.value.segment}\n---\n`)
+              propagate(block)
+            },
+            keycombo: useListenable(keycombos.horizontalRule),
           }
 
     watchEffect(() => block.value.setString(completeable.value.string).setSelection(completeable.value.selection))
@@ -98,7 +134,7 @@ export default {
     watch([inputElement, keycomboStatus], () => {
       if (inputElement.value !== null) {
         if (keycomboStatus.value !== 'listening') {
-          [bold, italic, superscript, subscript, strikethrough, code, link, codeblock, blockquote].forEach(method => {
+          [bold, italic, superscript, subscript, strikethrough, code, link, codeblock, blockquote, orderedList, unorderedList, heading, horizontalRule].forEach(method => {
             method.keycombo.value.listen(event => {
               event.preventDefault()
               method.complete()
@@ -121,6 +157,10 @@ export default {
       // block
       codeblock: codeblock.complete,
       blockquote: blockquote.complete,
+      orderedList: orderedList.complete,
+      unorderedList: unorderedList.complete,
+      heading: heading.complete,
+      horizontalRule: horizontalRule.complete,
     }
 
     provide(useSymbol('markdown', 'complete'), complete)
