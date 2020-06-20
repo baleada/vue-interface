@@ -39,6 +39,7 @@
   "dependencies": {},
   "peerDependencies": {
     "@baleada/vue-composition": "0.x",
+    "@baleada/vue-features": "0.x",
     "vue": "2.x",
     "@vue/composition-api": "0.x"
   }

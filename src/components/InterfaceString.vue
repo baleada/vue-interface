@@ -24,26 +24,18 @@
       :style="descendant1Styles"
     />
     <input
+      ref="inputElement"
       v-if="['text', 'email', 'password'].includes(type)"
       :type="type"
-      v-on="{
-        ...listeners,
-        mousedown: handleMousedown,
-        focus: handleFocus,
-        blur: handleBlur,
-      }"
+      v-on="exceptInputListener"
       v-bind="attrs"
       :class="descendant2Classes"
       :style="descendant2Styles"
     />
     <textarea
+      ref="inputElement"
       v-if="type === 'textarea'"
-      v-on="{
-        ...listeners,
-        mousedown: handleMousedown,
-        focus: handleFocus,
-        blur: handleBlur,
-      }"
+      v-on="exceptInputListener"
       v-bind="attrs"
       :class="descendant2Classes"
       :style="descendant2Styles"
@@ -53,13 +45,16 @@
       :class="descendant3Classes"
       :style="descendant3Styles"
     >
-      <slot v-bind="{ status }"></slot>
+      <slot v-bind="{ status, completeable }"></slot>
     </section>
   </section>
 </template>
 
 <script>
-import { getCurrentInstance, ref, computed, provide } from '@vue/composition-api'
+import { getCurrentInstance, ref, computed, onMounted, watchEffect, provide } from '@vue/composition-api'
+
+import { useListenable } from '@baleada/vue-composition'
+import { useCompleteableInput } from '@baleada/vue-features'
 
 import HapticRectangle from '../util/HapticRectangle.vue'
 import HapticCircle from '../util/HapticCircle.vue'
@@ -126,66 +121,81 @@ export default {
       default: () => ({}),
     },
   },
-  setup (props) {
+  setup (props, { emit }) {
     const baleada = ref(null),
+          inputElement = ref(null),
           attrs = computed(() => getCurrentInstance().$attrs),
           listeners = computed(() => getCurrentInstance().$listeners), // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
-          onMousedown = listeners.value.mousedown,
-          onFocus = listeners.value.focus,
-          onBlur = listeners.value.blur,
+          exceptInputListener = computed((({ input, ...rest }) => rest)(listeners.value)),
+          onInput = listeners.value.input,
           eventPosition = ref({ x: 0, y: 0 }),
-          status = ref('ready')
-    
-    function handleMousedown (event) {
-      status.value = 'focused'
-      const { clientX, clientY } = event,
-            { x, y } = baleada.value.getBoundingClientRect(),
-            left = clientX - x,
-            top = clientY - y
+          { completeable, status, completeableChangeAgent } = useCompleteableInput({
+            completeable: [attrs.value?.value || ''],
+            input: inputElement,
+          }),
+          inputEventStatus = ref('ready')
 
-      eventPosition.value = { left, top }
-      
-      if (typeof onMousedown === 'function') {
-        onMousedown(event)
+    /* Intercept input */
+    const input = useListenable('input'),
+          inputHandle = event => {
+            inputEventStatus.value = 'handling'
+            event.target.value = completeable.value.string
+            onInput?.(event)
+            inputEventStatus.value = 'handled'
+          }
+    onMounted(() => input.value.listen(inputHandle, { target: inputElement.value }))
+
+    watchEffect(() => {
+      switch (completeableChangeAgent.value) {
+      case 'event':
+        // do nothing
+        break
+      case 'program':
+        emit('input', { target: { value: completeable.value.string } })
+        break
       }
-    }
+    })
 
-    function handleFocus (event) {
-      if (status.value !== 'focused') {
-        status.value = 'focused'
-        eventPosition.value = {
-          left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change when using keyboard to focus in and out
-          top: eventPosition.value.top === 0 ? 1 : 0,
-        }
-      }
 
-      if (typeof onFocus === 'function') {
-        onFocus(event)
-      }
-    }
+    /* Manage event position for haptics */ 
+    const mousedown = useListenable('mousedown'),
+          mousedownHandle = event => {
+            const { clientX, clientY } = event,
+                  { x, y } = baleada.value.getBoundingClientRect(),
+                  left = clientX - x,
+                  top = clientY - y
 
-    function handleBlur (event) {
-      status.value = 'blurred'
+            eventPosition.value = { left, top }
+          }
+    onMounted(() => mousedown.value.listen(mousedownHandle, { target: inputElement.value }))
 
-      if (typeof onFocus === 'function') {
-        onBlur(event)
-      }
-    }
+    const focus = useListenable('focus'),
+          focusHandle = event => {
+            if (status.value.input !== 'focused') {
+              eventPosition.value = {
+                left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change when using keyboard to focus in and out
+                top: eventPosition.value.top === 0 ? 1 : 0,
+              }
+            }
+          }
+    onMounted(() => focus.value.listen(focusHandle, { target: inputElement.value }))
 
+
+    /* Provide stuff */
     provide(useSymbol('string', 'eventPosition'), eventPosition)
     provide(useSymbol('string', 'status'), status)
+    provide(useSymbol('string', 'completeable'), completeable)
 
     const styles = props.hasHaptics ? ({ position: 'relative' }) : ({})
 
     return {
       baleada,
+      inputElement,
       attrs,
-      listeners,
+      exceptInputListener,
       styles,
-      handleMousedown,
-      handleFocus,
-      handleBlur,
       status,
+      completeable,
     }
   }
 }
