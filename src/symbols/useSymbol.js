@@ -9,13 +9,7 @@ const symbols = {
   },
   markdown: {
     keycombos: Symbol('keycombos'),
-    bold: Symbol('bold'),
-    italic: Symbol('italic'),
-    superscript: Symbol('superscript'),
-    subscript: Symbol('subscript'),
-    strikethrough: Symbol('strikethrough'),
-    inlineCode: Symbol('inlineCode'),
-    link: Symbol('link'),
+    complete: Symbol('complete'),
   }
 }
 
