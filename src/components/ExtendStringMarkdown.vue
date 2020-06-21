@@ -103,7 +103,7 @@ export default {
           heading = {
             complete: level => {
               let hashes = ''
-              for (i = 0; i < level && i < 6; i++) {
+              for (let i = 0; i < level && i < 6; i++) {
                 hashes += '#'
               }
               block.value.complete(`${hashes} ${block.value.segment}`)
@@ -113,10 +113,6 @@ export default {
           },
           horizontalRule = {
             complete: level => {
-              let hashes = ''
-              for (i = 0; i < level && i < 6; i++) {
-                hashes += '#'
-              }
               block.value.complete(`${block.value.segment}\n---\n`)
               propagate(block)
             },
