@@ -88,7 +88,7 @@ export default {
           },
           orderedList = {
             complete: () => {
-              block.value.complete(block.value.segment.split('\n').map(line => `1. ${line}`).join('\n'))
+              block.value.complete(block.value.segment.split('\n').map((line, index) => `${index + 1}. ${line}`).join('\n'))
               propagate(block)
             },
             keycombo: useListenable(keycombos.orderedList),
@@ -101,7 +101,7 @@ export default {
             keycombo: useListenable(keycombos.unorderedList),
           },
           heading = {
-            complete: level => {
+            complete: (level = 1) => {
               let hashes = ''
               for (let i = 0; i < level && i < 6; i++) {
                 hashes += '#'
@@ -113,7 +113,7 @@ export default {
           },
           horizontalRule = {
             complete: level => {
-              block.value.complete(`${block.value.segment}\n---\n`)
+              block.value.complete(`${block.value.segment}${block.value.segment.length > 0 ? '\n' : ''}---\n`)
               propagate(block)
             },
             keycombo: useListenable(keycombos.horizontalRule),
