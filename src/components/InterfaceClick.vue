@@ -14,7 +14,6 @@
     <HapticCircle
       v-if="hasHaptics"
       symbolCollection="click"
-      :baseWidth="hapticsBaseWidth"
       :maxOpacity="hapticsMaxOpacity"
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
