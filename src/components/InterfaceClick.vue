@@ -1,14 +1,8 @@
 <template>
-  <!-- Attrs and listeners fall through to the button automatically -->
+  <!-- Attrs and listeners fall through to the root automatically -->
   <component :is="tag"
-    :class="`baleada-interface-${tag.toLowerCase()}`"
+    class="baleada-interface-click"
     :style="styles"
-    v-bind="attrs"
-    v-on="{
-      ...listeners,
-      mousedown: handleMousedown,
-      ['keydown.space']: handleSpace,
-    }"
     ref="baleada"
   >
     <HapticCircle
@@ -32,8 +26,8 @@
 </template>
 
 <script>
-import { ref, computed, provide, getCurrentInstance } from '@vue/composition-api'
-
+import { ref, computed, provide, getCurrentInstance, watchEffect, watch, onMounted } from '@vue/composition-api'
+import { useListenable } from '@baleada/vue-composition'
 import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
 
@@ -86,30 +80,57 @@ export default {
   },
   setup (props) {
     const baleada = ref(null),
-          attrs = computed(() => getCurrentInstance().$attrs),
-          listeners = computed(() => getCurrentInstance().$listeners), // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
-          onMousedown = listeners.mousedown,
-          eventPosition = ref({ x: 0, y: 0 })
+          eventPosition = ref({ x: 0, y: 0 }),
+          listeners = getCurrentInstance().$listeners
     
-    function handleMousedown (event) {
-      const { clientX, clientY } = event,
-            { x, y } = baleada.value.getBoundingClientRect(),
-            left = clientX - x,
-            top = clientY - y
+    Object.keys(listeners).forEach(eventType => {
+      const listenable = useListenable(eventType)
+      // onMounted with ref shim
+      watch([baleada, listenable], () => {
+        if (baleada.value !== null) {
+          switch (listenable.value.status) {
+          case 'listening':
+            // do nothing
+            break
+          default:
+            listenable.value.listen(listeners[eventType], { target: baleada.value })
+          }
+        }
+      })
+    })
 
-      eventPosition.value = { left, top }
-      
-      if (typeof onMousedown === 'function') {
-        onMousedown(event)
-      }
-    }
+    const mousedown = useListenable('mousedown'),
+          mousedownHandle =  event => {
+            const { clientX, clientY } = event,
+                  { x, y } = baleada.value.getBoundingClientRect(),
+                  left = clientX - x,
+                  top = clientY - y
 
-    function handleSpace (evt) {
-      eventPosition.value = {
-        left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change regardless of previous click position
-        top: eventPosition.value.top === 0 ? 1 : 0,
+            eventPosition.value = { left, top }
+          },
+          mousedownStatus = ref('ready')
+    
+    // onMounted with ref shim
+    watch([baleada, mousedown], () => {
+      if (baleada.value !== null) {
+        switch (mousedown.value.status) {
+        case 'listening':
+          // do nothing
+          break
+        default:
+          mousedown.value.listen(mousedownHandle, { target: baleada.value })
+        }
       }
-    }
+    })
+
+    const space = useListenable('space'),
+          spaceHandle = () => {
+            eventPosition.value = {
+              left: eventPosition.value.left === 0 ? 1 : 0, // ensure a change regardless of previous click position
+              top: eventPosition.value.top === 0 ? 1 : 0,
+            }
+          }
+    // onMounted(() => space.value.listen(spaceHandle, { target: baleada.value }))
 
     provide(useSymbol('click', 'eventPosition'), eventPosition)
 
@@ -117,10 +138,6 @@ export default {
 
     return {
       baleada,
-      attrs,
-      listeners,
-      handleMousedown,
-      handleSpace,
       styles,
     }
   }

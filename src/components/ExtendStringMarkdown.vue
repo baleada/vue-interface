@@ -20,6 +20,7 @@ export default {
     const inline = useCompleteable(completeable.value.string, { segment: { from: 'divider', to: 'divider' }, divider: /\s/ }),
           bold = {
             complete: () => {
+              console.log('bold')
               inline.value.complete(`**${inline.value.segment}**`)
               propagate(inline)
             },
