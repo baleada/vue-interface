@@ -5,6 +5,7 @@ import resolve from '@rollup/plugin-node-resolve'
 export default {
   external: [
     '@baleada/vue-composition',
+    '@baleada/vue-features',
     'vue',
   ],
   input: [
