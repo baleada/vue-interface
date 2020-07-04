@@ -1,6 +1,6 @@
 {
   "name": "@baleada/vue-interface",
-  "version": "0.5.0",
+  "version": "0.6.0",
   "description": "Vue user interface components for the Baleada toolkit",
   "main": "lib/index.js",
   "module": "lib/index.js",
