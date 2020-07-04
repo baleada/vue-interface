@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { ref, computed, provide, getCurrentInstance, watchEffect, watch, onMounted } from '@vue/composition-api'
+import { ref, computed, provide, getCurrentInstance, onMounted } from 'vue'
 import { useListenable } from '@baleada/vue-composition'
 import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
@@ -80,24 +80,7 @@ export default {
   },
   setup (props) {
     const baleada = ref(null),
-          eventPosition = ref({ x: 0, y: 0 }),
-          listeners = getCurrentInstance().$listeners
-    
-    Object.keys(listeners).forEach(eventType => {
-      const listenable = useListenable(eventType)
-      // onMounted with ref shim
-      watch([baleada, listenable], () => {
-        if (baleada.value !== null) {
-          switch (listenable.value.status) {
-          case 'listening':
-            // do nothing
-            break
-          default:
-            listenable.value.listen(listeners[eventType], { target: baleada.value })
-          }
-        }
-      })
-    })
+          eventPosition = ref({ x: 0, y: 0 })
 
     const mousedown = useListenable('mousedown'),
           mousedownHandle =  event => {
@@ -111,17 +94,18 @@ export default {
           mousedownStatus = ref('ready')
     
     // onMounted with ref shim
-    watch([baleada, mousedown], () => {
-      if (baleada.value !== null) {
-        switch (mousedown.value.status) {
-        case 'listening':
-          // do nothing
-          break
-        default:
-          mousedown.value.listen(mousedownHandle, { target: baleada.value })
-        }
-      }
-    })
+    // watch([baleada, mousedown], () => {
+    //   if (baleada.value !== null) {
+    //     switch (mousedown.value.status) {
+    //     case 'listening':
+    //       // do nothing
+    //       break
+    //     default:
+    //       mousedown.value.listen(mousedownHandle, { target: baleada.value })
+    //     }
+    //   }
+    // })
+    onMounted(() => mousedown.value.listen(mousedownHandle, { target: baleada.value }))
 
     const space = useListenable('space'),
           spaceHandle = () => {
@@ -130,7 +114,7 @@ export default {
               top: eventPosition.value.top === 0 ? 1 : 0,
             }
           }
-    // onMounted(() => space.value.listen(spaceHandle, { target: baleada.value }))
+    onMounted(() => space.value.listen(spaceHandle, { target: baleada.value }))
 
     provide(useSymbol('click', 'eventPosition'), eventPosition)
 

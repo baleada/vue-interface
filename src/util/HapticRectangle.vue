@@ -14,7 +14,7 @@
 </template>
 
 <script>
-import { ref, watch, watchEffect, inject } from '@vue/composition-api'
+import { ref, watch, watchEffect, inject } from 'vue'
 
 import { useSymbol } from '../symbols'
 

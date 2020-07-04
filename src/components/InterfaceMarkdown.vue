@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { ref, computed, getCurrentInstance, provide } from '@vue/composition-api'
+import { ref, computed, getCurrentInstance, provide } from 'vue'
 
 import InterfaceString from './InterfaceString.vue'
 import ExtendStringMarkdown from './ExtendStringMarkdown.vue'

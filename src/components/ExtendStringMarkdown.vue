@@ -1,11 +1,9 @@
 <template>
-  <div>
-    <slot v-bind="{ status, completeable, complete }" />
-  </div>
+  <slot v-bind="{ status, completeable, complete }" />
 </template>
 
 <script>
-import { ref, watchEffect, watch, onMounted, provide, inject } from '@vue/composition-api'
+import { ref, watchEffect, watch, onMounted, provide, inject } from 'vue'
 import { useCompleteable, useListenable } from '@baleada/vue-composition'
 import { useSymbol } from '../symbols'
 

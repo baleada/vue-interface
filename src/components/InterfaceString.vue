@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import { getCurrentInstance, ref, computed, onMounted, watchEffect, provide } from '@vue/composition-api'
+import { getCurrentInstance, ref, computed, onMounted, watchEffect, provide } from 'vue'
 
 import { useListenable } from '@baleada/vue-composition'
 import { useCompleteableInput } from '@baleada/vue-features'
