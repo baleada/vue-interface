@@ -2,7 +2,8 @@
   <!-- Attrs and listeners fall through to the root automatically -->
   <component :is="tag"
     class="baleada-interface-click"
-    :style="styles"
+    :class="interfaceClasses"
+    :style="rootStyles"
     ref="baleada"
   >
     <HapticCircle
@@ -12,13 +13,13 @@
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
       :timing="hapticsTiming"
-      :class="descendant1Classes"
-      :style="descendant1Styles"
+      :class="hapticsClasses"
+      :style="hapticsStyles"
     />
     <section
       class="contents"
-      :class="descendant2Classes"
-      :style="descendant2Styles"
+      :class="contentsClasses"
+      :style="contentsStyles"
     >
       <slot />
     </section>
@@ -61,19 +62,27 @@ export default {
     hapticsTiming: {
       type: Array,
     },
-    descendant1Classes: {
+    hapticsClasses: {
       type: String,
       default: '',
     },
-    descendant1Styles: {
+    hapticsStyles: {
       type: Object,
       default: () => ({}),
     },
-    descendant2Classes: {
+    interfaceClasses: {
       type: String,
       default: '',
     },
-    descendant2Styles: {
+    interfaceStyles: {
+      type: Object,
+      default: () => ({}),
+    },
+    contentsClasses: {
+      type: String,
+      default: '',
+    },
+    contentsStyles: {
       type: Object,
       default: () => ({}),
     },
@@ -92,19 +101,6 @@ export default {
             eventPosition.value = { left, top }
           },
           mousedownStatus = ref('ready')
-    
-    // onMounted with ref shim
-    // watch([baleada, mousedown], () => {
-    //   if (baleada.value !== null) {
-    //     switch (mousedown.value.status) {
-    //     case 'listening':
-    //       // do nothing
-    //       break
-    //     default:
-    //       mousedown.value.listen(mousedownHandle, { target: baleada.value })
-    //     }
-    //   }
-    // })
     onMounted(() => mousedown.value.listen(mousedownHandle, { target: baleada.value }))
 
     const space = useListenable('space'),
@@ -118,11 +114,11 @@ export default {
 
     provide(useSymbol('click', 'eventPosition'), eventPosition)
 
-    const styles = props.hasHaptics ? { position: 'relative' } : {}
+    const rootStyles = props.hasHaptics ? { ...props.interfaceStyles, position: 'relative' } : { ...props.interfaceStyles }
 
     return {
       baleada,
-      styles,
+      rootStyles,
     }
   }
 }
