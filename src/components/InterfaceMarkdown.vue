@@ -3,7 +3,6 @@
     class="baleada-interface-markdown"
     ref="baleada"
     v-bind="attrs"
-    v-on="listeners"
   >
     <ExtendStringMarkdown v-slot="{ status, completeable, complete }">
       <slot v-bind="{ status, completeable, complete }" />
@@ -32,16 +31,16 @@ export default {
   inheritAttrs: false,
   setup (props) {
     const baleada = ref(null),
-          attrs = computed(() => getCurrentInstance().$attrs || {}),
-          listeners = computed(() => getCurrentInstance().$listeners || {}) // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
+          attrs = computed(() => getCurrentInstance().ctx.$attrs || {})
 
     provide(useSymbol('markdown', 'keycombos'), props.keycombos)
+
+    console.log(getCurrentInstance())
 
 
     return {
       baleada,
       attrs,
-      listeners,
     }
   }
 }

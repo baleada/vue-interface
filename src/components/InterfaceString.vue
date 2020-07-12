@@ -27,7 +27,6 @@
       ref="inputElement"
       v-if="['text', 'email', 'password'].includes(type)"
       :type="type"
-      v-on="listeners"
       v-bind="attrs"
       :class="interfaceClasses"
       :style="interfaceStyles"
@@ -35,7 +34,6 @@
     <textarea
       ref="inputElement"
       v-if="type === 'textarea'"
-      v-on="listeners"
       v-bind="attrs"
       :class="interfaceClasses"
       :style="interfaceStyles"
@@ -124,8 +122,7 @@ export default {
   setup (props, { emit }) {
     const baleada = ref(null),
           inputElement = ref(null),
-          attrs = computed(() => getCurrentInstance().$attrs || {}),
-          listeners = computed(() => getCurrentInstance().$listeners || {}), // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
+          attrs = computed(() => getCurrentInstance().ctx.$attrs || {}),
           eventPosition = ref({ x: 0, y: 0 }),
           { completeable, status, completeableChangeAgent } = useCompleteableInput({
             completeable: [attrs.value?.value || ''],
@@ -189,7 +186,6 @@ export default {
       baleada,
       inputElement,
       attrs,
-      listeners,
       styles,
       status,
       completeable,
