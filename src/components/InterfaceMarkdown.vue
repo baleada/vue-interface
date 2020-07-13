@@ -29,9 +29,8 @@ export default {
     },
   },
   inheritAttrs: false,
-  setup (props) {
-    const baleada = ref(null),
-          attrs = computed(() => getCurrentInstance().ctx.$attrs || {})
+  setup (props, { attrs }) {
+    const baleada = ref(null)
 
     provide(useSymbol('markdown', 'keycombos'), props.keycombos)
 

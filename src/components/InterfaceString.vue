@@ -119,10 +119,9 @@ export default {
       default: () => ({}),
     },
   },
-  setup (props, { emit }) {
+  setup (props, { emit, attrs }) {
     const baleada = ref(null),
           inputElement = ref(null),
-          attrs = computed(() => getCurrentInstance().ctx.$attrs || {}),
           eventPosition = ref({ x: 0, y: 0 }),
           { completeable, status, completeableChangeAgent } = useCompleteableInput({
             completeable: [attrs.value?.value || ''],
