@@ -4,9 +4,9 @@
     ref="baleada"
     v-bind="attrs"
   >
-    <ExtendStringMarkdown v-slot="{ status, completeable, complete }">
+    <ExtendStringAsMarkdown v-slot="{ status, completeable, complete }">
       <slot v-bind="{ status, completeable, complete }" />
-    </ExtendStringMarkdown>
+    </ExtendStringAsMarkdown>
   </InterfaceString>
 </template>
 
@@ -14,13 +14,13 @@
 import { ref, computed, getCurrentInstance, provide } from 'vue'
 
 import InterfaceString from './InterfaceString.vue'
-import ExtendStringMarkdown from './ExtendStringMarkdown.vue'
+import ExtendStringAsMarkdown from './ExtendStringAsMarkdown.vue'
 import { useSymbol } from '../symbols'
 
 export default {
   components: {
     InterfaceString,
-    ExtendStringMarkdown,
+    ExtendStringAsMarkdown,
   },
   props: {
     keycombos: {
