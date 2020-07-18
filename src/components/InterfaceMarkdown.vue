@@ -11,7 +11,7 @@
 </template>
 
 <script>
-import { ref, computed, getCurrentInstance, provide } from 'vue'
+import { ref, provide } from 'vue'
 
 import InterfaceString from './InterfaceString.vue'
 import ExtendStringAsMarkdown from './ExtendStringAsMarkdown.vue'
@@ -33,8 +33,6 @@ export default {
     const baleada = ref(null)
 
     provide(useSymbol('markdown', 'keycombos'), props.keycombos)
-
-    console.log(getCurrentInstance())
 
 
     return {

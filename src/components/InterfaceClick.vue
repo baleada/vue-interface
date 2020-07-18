@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ref, computed, provide, getCurrentInstance, onMounted } from 'vue'
+import { ref, provide, getCurrentInstance, onMounted } from 'vue'
 import { useListenable } from '@baleada/vue-composition'
 import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
