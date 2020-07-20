@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { ref, provide, getCurrentInstance, onMounted } from 'vue'
+import { ref, computed, provide, onMounted } from 'vue'
 import { useListenable } from '@baleada/vue-composition'
 import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
@@ -41,7 +41,7 @@ export default {
     tag: {
       type: String,
       default: 'button',
-      validator: tag => ['button', 'a', 'NuxtLink', 'RouterLink'].includes(tag)
+      validator: tag => ['button', 'a', 'NuxtLink', 'RouterLink', 'nuxt-link', 'router-link'].includes(tag)
     },
     hasHaptics: {
       type: Boolean,
@@ -89,19 +89,20 @@ export default {
   },
   setup (props) {
     const baleada = ref(null),
+          element = computed(() => ['NuxtLink', 'RouterLink', 'nuxt-link', 'router-link'].includes(props.tag) ? baleada.value.$el : baleada.value),
           eventPosition = ref({ x: 0, y: 0 })
 
     const mousedown = useListenable('mousedown'),
           mousedownHandle =  event => {
             const { clientX, clientY } = event,
-                  { x, y } = baleada.value.getBoundingClientRect(),
+                  { x, y } = element.value.getBoundingClientRect(),
                   left = clientX - x,
                   top = clientY - y
 
             eventPosition.value = { left, top }
           },
           mousedownStatus = ref('ready')
-    onMounted(() => mousedown.value.listen(mousedownHandle, { target: baleada.value }))
+    onMounted(() => mousedown.value.listen(mousedownHandle, { target: element.value }))
 
     const space = useListenable('space'),
           spaceHandle = () => {
@@ -110,7 +111,7 @@ export default {
               top: eventPosition.value.top === 0 ? 1 : 0,
             }
           }
-    onMounted(() => space.value.listen(spaceHandle, { target: baleada.value }))
+    onMounted(() => space.value.listen(spaceHandle, { target: element.value }))
 
     provide(useSymbol('click', 'eventPosition'), eventPosition)
 
