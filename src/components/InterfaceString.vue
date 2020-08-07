@@ -10,8 +10,8 @@
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
       :timing="hapticsTiming"
-      :class="descendant1Classes"
-      :style="descendant1Styles"
+      :class="hapticsClasses"
+      :style="hapticsStyles"
     />
     <HapticCircle
       v-if="hasHaptics && type === 'textarea'"
@@ -20,30 +20,28 @@
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
       :timing="hapticsTiming"
-      :class="descendant1Classes"
-      :style="descendant1Styles"
+      :class="hapticsClasses"
+      :style="hapticsStyles"
     />
     <input
       ref="inputElement"
       v-if="['text', 'email', 'password'].includes(type)"
       :type="type"
-      v-on="exceptInputListener"
       v-bind="attrs"
-      :class="descendant2Classes"
-      :style="descendant2Styles"
+      :class="interfaceClasses"
+      :style="interfaceStyles"
     />
     <textarea
       ref="inputElement"
       v-if="type === 'textarea'"
-      v-on="exceptInputListener"
       v-bind="attrs"
-      :class="descendant2Classes"
-      :style="descendant2Styles"
+      :class="interfaceClasses"
+      :style="interfaceStyles"
     />
     <section
       class="contents"
-      :class="descendant3Classes"
-      :style="descendant3Styles"
+      :class="contentsClasses"
+      :style="contentsStyles"
     >
       <slot v-bind="{ status, completeable }"></slot>
     </section>
@@ -51,7 +49,7 @@
 </template>
 
 <script>
-import { getCurrentInstance, ref, computed, onMounted, watchEffect, provide } from '@vue/composition-api'
+import { getCurrentInstance, ref, onMounted, watchEffect, provide } from 'vue'
 
 import { useListenable } from '@baleada/vue-composition'
 import { useCompleteableInput } from '@baleada/vue-features'
@@ -96,38 +94,34 @@ export default {
     hapticsTiming: { // Both circle and rectangle
       type: Array,
     },
-    descendant1Classes: {
+    hapticsClasses: {
       type: String,
       default: '',
     },
-    descendant1Styles: {
+    hapticsStyles: {
       type: Object,
       default: () => ({}),
     },
-    descendant2Classes: {
+    interfaceClasses: {
       type: String,
       default: '',
     },
-    descendant2Styles: {
+    interfaceStyles: {
       type: Object,
       default: () => ({}),
     },
-    descendant3Classes: {
+    contentsClasses: {
       type: String,
       default: '',
     },
-    descendant3Styles: {
+    contentsStyles: {
       type: Object,
       default: () => ({}),
     },
   },
-  setup (props, { emit }) {
+  setup (props, { emit, attrs }) {
     const baleada = ref(null),
           inputElement = ref(null),
-          attrs = computed(() => getCurrentInstance().$attrs),
-          listeners = computed(() => getCurrentInstance().$listeners), // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
-          exceptInputListener = computed((({ input, ...rest }) => rest)(listeners.value)),
-          onInput = listeners.value.input,
           eventPosition = ref({ x: 0, y: 0 }),
           { completeable, status, completeableChangeAgent } = useCompleteableInput({
             completeable: [attrs.value?.value || ''],
@@ -135,12 +129,10 @@ export default {
           }),
           inputEventStatus = ref('ready')
 
-    /* Intercept input */
     const input = useListenable('input'),
           inputHandle = event => {
             inputEventStatus.value = 'handling'
             event.target.value = completeable.value.string
-            onInput?.(event)
             inputEventStatus.value = 'handled'
           }
     onMounted(() => input.value.listen(inputHandle, { target: inputElement.value }))
@@ -193,7 +185,6 @@ export default {
       baleada,
       inputElement,
       attrs,
-      exceptInputListener,
       styles,
       status,
       completeable,

@@ -1,4 +1,4 @@
-export { default as ExtendStringMarkdown } from './components/ExtendStringMarkdown.vue'
+export { default as ExtendStringAsMarkdown } from './components/ExtendStringAsMarkdown.vue'
 export { default as InterfaceClick } from './components/InterfaceClick.vue'
 export { default as InterfaceMarkdown } from './components/InterfaceMarkdown.vue'
 export { default as InterfaceOption } from './components/InterfaceOption.vue'

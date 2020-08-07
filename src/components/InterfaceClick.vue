@@ -2,7 +2,8 @@
   <!-- Attrs and listeners fall through to the root automatically -->
   <component :is="tag"
     class="baleada-interface-click"
-    :style="styles"
+    :class="interfaceClasses"
+    :style="rootStyles"
     ref="baleada"
   >
     <HapticCircle
@@ -12,13 +13,13 @@
       :maxScale="hapticsMaxScale"
       :duration="hapticsDuration"
       :timing="hapticsTiming"
-      :class="descendant1Classes"
-      :style="descendant1Styles"
+      :class="hapticsClasses"
+      :style="hapticsStyles"
     />
     <section
       class="contents"
-      :class="descendant2Classes"
-      :style="descendant2Styles"
+      :class="contentsClasses"
+      :style="contentsStyles"
     >
       <slot />
     </section>
@@ -26,7 +27,7 @@
 </template>
 
 <script>
-import { ref, computed, provide, getCurrentInstance, watchEffect, watch, onMounted } from '@vue/composition-api'
+import { ref, computed, provide, onMounted } from 'vue'
 import { useListenable } from '@baleada/vue-composition'
 import HapticCircle from '../util/HapticCircle.vue'
 import { useSymbol } from '../symbols'
@@ -40,7 +41,7 @@ export default {
     tag: {
       type: String,
       default: 'button',
-      validator: tag => ['button', 'a', 'NuxtLink', 'RouterLink'].includes(tag)
+      validator: tag => ['button', 'a', 'NuxtLink', 'RouterLink', 'nuxt-link', 'router-link'].includes(tag)
     },
     hasHaptics: {
       type: Boolean,
@@ -61,67 +62,47 @@ export default {
     hapticsTiming: {
       type: Array,
     },
-    descendant1Classes: {
+    hapticsClasses: {
       type: String,
       default: '',
     },
-    descendant1Styles: {
+    hapticsStyles: {
       type: Object,
       default: () => ({}),
     },
-    descendant2Classes: {
+    interfaceClasses: {
       type: String,
       default: '',
     },
-    descendant2Styles: {
+    interfaceStyles: {
+      type: Object,
+      default: () => ({}),
+    },
+    contentsClasses: {
+      type: String,
+      default: '',
+    },
+    contentsStyles: {
       type: Object,
       default: () => ({}),
     },
   },
   setup (props) {
     const baleada = ref(null),
-          eventPosition = ref({ x: 0, y: 0 }),
-          listeners = getCurrentInstance().$listeners
-    
-    Object.keys(listeners).forEach(eventType => {
-      const listenable = useListenable(eventType)
-      // onMounted with ref shim
-      watch([baleada, listenable], () => {
-        if (baleada.value !== null) {
-          switch (listenable.value.status) {
-          case 'listening':
-            // do nothing
-            break
-          default:
-            listenable.value.listen(listeners[eventType], { target: baleada.value })
-          }
-        }
-      })
-    })
+          element = computed(() => ['NuxtLink', 'RouterLink', 'nuxt-link', 'router-link'].includes(props.tag) ? baleada.value.$el : baleada.value),
+          eventPosition = ref({ x: 0, y: 0 })
 
     const mousedown = useListenable('mousedown'),
           mousedownHandle =  event => {
             const { clientX, clientY } = event,
-                  { x, y } = baleada.value.getBoundingClientRect(),
+                  { x, y } = element.value.getBoundingClientRect(),
                   left = clientX - x,
                   top = clientY - y
 
             eventPosition.value = { left, top }
           },
           mousedownStatus = ref('ready')
-    
-    // onMounted with ref shim
-    watch([baleada, mousedown], () => {
-      if (baleada.value !== null) {
-        switch (mousedown.value.status) {
-        case 'listening':
-          // do nothing
-          break
-        default:
-          mousedown.value.listen(mousedownHandle, { target: baleada.value })
-        }
-      }
-    })
+    onMounted(() => mousedown.value.listen(mousedownHandle, { target: element.value }))
 
     const space = useListenable('space'),
           spaceHandle = () => {
@@ -130,15 +111,15 @@ export default {
               top: eventPosition.value.top === 0 ? 1 : 0,
             }
           }
-    // onMounted(() => space.value.listen(spaceHandle, { target: baleada.value }))
+    onMounted(() => space.value.listen(spaceHandle, { target: element.value }))
 
     provide(useSymbol('click', 'eventPosition'), eventPosition)
 
-    const styles = props.hasHaptics ? { position: 'relative' } : {}
+    const rootStyles = props.hasHaptics ? { ...props.interfaceStyles, position: 'relative' } : { ...props.interfaceStyles }
 
     return {
       baleada,
-      styles,
+      rootStyles,
     }
   }
 }

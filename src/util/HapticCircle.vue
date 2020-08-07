@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { ref, watch, inject } from '@vue/composition-api'
+import { ref, watch, inject } from 'vue'
 
 import { useSymbol } from '../symbols'
 

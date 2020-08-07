@@ -3,25 +3,24 @@
     class="baleada-interface-markdown"
     ref="baleada"
     v-bind="attrs"
-    v-on="listeners"
   >
-    <ExtendStringMarkdown v-slot="{ status, completeable, complete }">
+    <ExtendStringAsMarkdown v-slot="{ status, completeable, complete }">
       <slot v-bind="{ status, completeable, complete }" />
-    </ExtendStringMarkdown>
+    </ExtendStringAsMarkdown>
   </InterfaceString>
 </template>
 
 <script>
-import { ref, computed, getCurrentInstance, provide } from '@vue/composition-api'
+import { ref, provide } from 'vue'
 
 import InterfaceString from './InterfaceString.vue'
-import ExtendStringMarkdown from './ExtendStringMarkdown.vue'
+import ExtendStringAsMarkdown from './ExtendStringAsMarkdown.vue'
 import { useSymbol } from '../symbols'
 
 export default {
   components: {
     InterfaceString,
-    ExtendStringMarkdown,
+    ExtendStringAsMarkdown,
   },
   props: {
     keycombos: {
@@ -30,10 +29,8 @@ export default {
     },
   },
   inheritAttrs: false,
-  setup (props) {
-    const baleada = ref(null),
-          attrs = computed(() => getCurrentInstance().$attrs),
-          listeners = computed(() => getCurrentInstance().$listeners) // I don't actually want this to be reactive, but if it's just a normal reference you can't use this component as the root of another component.
+  setup (props, { attrs }) {
+    const baleada = ref(null)
 
     provide(useSymbol('markdown', 'keycombos'), props.keycombos)
 
@@ -41,7 +38,6 @@ export default {
     return {
       baleada,
       attrs,
-      listeners,
     }
   }
 }

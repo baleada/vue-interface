@@ -4,8 +4,8 @@ import resolve from '@rollup/plugin-node-resolve'
 
 export default {
   external: [
-    '@vue/composition-api',
     '@baleada/vue-composition',
+    '@baleada/vue-features',
     'vue',
   ],
   input: [
