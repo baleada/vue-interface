@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://gitlab.com/baleada/vue-interface.git"
+    "url": "git+https://github.com/baleada/vue-interface.git"
   },
   "keywords": [
     "baleada",
@@ -21,7 +21,7 @@
   "author": "Alex Vipond",
   "license": "MIT",
   "bugs": {
-    "url": "https://gitlab.com/baleada/vue-interface/issues"
+    "url": "https://github.com/baleada/vue-interface/issues"
   },
   "homepage": "https://baleada.netlify.com",
   "sideEffects": false,
