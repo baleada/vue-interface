@@ -49,7 +49,7 @@
 </template>
 
 <script>
-import { getCurrentInstance, ref, onMounted, watchEffect, provide } from 'vue'
+import { ref, onMounted, watchEffect, provide } from 'vue'
 
 import { useListenable } from '@baleada/vue-composition'
 import { useCompleteableInput } from '@baleada/vue-features'

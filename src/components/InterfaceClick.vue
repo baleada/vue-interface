@@ -1,6 +1,9 @@
 <template>
   <!-- Attrs and listeners fall through to the root automatically -->
-  <component :is="tag"
+  <!-- Explictly binding `to` here as a solution to a RouterLink bug that I haven't been able to pin down -->
+  <component
+    :is="tag"
+    :to="attrs.to"
     class="baleada-interface-click"
     :class="interfaceClasses"
     :style="rootStyles"
@@ -87,7 +90,7 @@ export default {
       default: () => ({}),
     },
   },
-  setup (props) {
+  setup (props, { attrs }) {
     const baleada = ref(null),
           element = computed(() => ['NuxtLink', 'RouterLink', 'nuxt-link', 'router-link'].includes(props.tag) ? baleada.value.$el : baleada.value),
           eventPosition = ref({ x: 0, y: 0 })
@@ -120,6 +123,7 @@ export default {
     return {
       baleada,
       rootStyles,
+      attrs,
     }
   }
 }
