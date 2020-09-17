@@ -1,5 +1,5 @@
 import vue from 'rollup-plugin-vue'
-import babel from 'rollup-plugin-babel'
+import babel from '@rollup/plugin-babel'
 import resolve from '@rollup/plugin-node-resolve'
 
 export default {
@@ -7,6 +7,7 @@ export default {
     '@baleada/vue-composition',
     '@baleada/vue-features',
     'vue',
+    /@babel\/runtime/,
   ],
   input: [
     'src/index.js',
@@ -19,7 +20,8 @@ export default {
   plugins: [
     vue(),
     babel({
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
+      babelHelpers: 'runtime',
     }),
     resolve(),
   ]

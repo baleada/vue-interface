@@ -1,6 +1,5 @@
 export { default as ExtendStringAsMarkdown } from './components/ExtendStringAsMarkdown.vue'
 export { default as InterfaceClick } from './components/InterfaceClick.vue'
 export { default as InterfaceMarkdown } from './components/InterfaceMarkdown.vue'
-export { default as InterfaceOption } from './components/InterfaceOption.vue'
 export { default as InterfaceString } from './components/InterfaceString.vue'
 export { default as useSymbol } from './symbols/useSymbol.js'
