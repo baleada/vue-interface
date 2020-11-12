@@ -1,28 +1,7 @@
 import * as components from './components'
 
-const defaultOptions = {
-  components: Object.keys(components).map(component => components[component]),
-  dynamic: true,
-}
-
-export default function install (Vue, options = {}) {
-  options = {
-    ...defaultOptions,
-    ...options
-  }
-
-  installComponents(Vue, options)
-}
-
-function installComponents (Vue, options) {
-  const { components, dynamic } = options
-
-  components.forEach(component => {
-    const name = component.name,
-          callback = dynamic
-            ? resolve => resolve(component)
-            : component
-
-    Vue.component(name, callback)
-  })
+export default function plugin (app) {
+  Object
+    .values(components)
+    .forEach(component => app.component(component.name, component))
 }

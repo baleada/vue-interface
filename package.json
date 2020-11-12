@@ -5,7 +5,7 @@
   "main": "lib/index.js",
   "module": "lib/index.js",
   "scripts": {
-    "prepare": "node scripts/prepare.js"
+    "prepare": "node scripts/prepare.js && rollup --config rollup.config.js"
   },
   "repository": {
     "type": "git",
@@ -26,24 +26,29 @@
   "homepage": "https://baleada.netlify.com",
   "sideEffects": false,
   "devDependencies": {
-    "@babel/cli": "^7.10.4",
+    "@babel/cli": "^7.11.6",
     "@babel/core": "^7.10.4",
+    "@babel/helpers": "^7.10.4",
     "@babel/plugin-proposal-optional-chaining": "^7.11.0",
     "@babel/plugin-transform-runtime": "^7.11.5",
     "@babel/preset-env": "^7.10.4",
     "@baleada/prepare": "^0.1.1",
+    "@baleada/rollup-plugin-virtual": "^0.0.5",
+    "@baleada/source-transform-files-to-index": "^0.2.2",
     "@rollup/plugin-babel": "^5.2.1",
     "@rollup/plugin-node-resolve": "^6.0.0",
-    "@vue/compiler-sfc": "^3.0.0-rc.12",
+    "@vue/compiler-sfc": "^3.0.2",
+    "eslint": "^7.13.0",
+    "eslint-plugin-vue": "^7.0.0-beta.4",
     "fast-async": "^6.3.8",
-    "rollup-plugin-vue": "^6.0.0-beta.6",
+    "rollup-plugin-vue": "^6.0.0-beta.11",
     "vue-loader": "^15.7.2",
     "vue-template-compiler": "^2.6.10"
   },
-  "dependencies": {},
-  "peerDependencies": {
-    "@baleada/vue-composition": "0.x",
-    "@baleada/vue-features": "0.x",
-    "vue": "3.x"
+  "dependencies": {
+    "@babel/runtime": "^7.12.5",
+    "@baleada/vue-composition": "^0.8.4",
+    "@baleada/vue-features": "^0.4.2",
+    "vue": "^3.0.2"
   }
 }
