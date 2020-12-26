@@ -1,60 +1,29 @@
-import vue from 'rollup-plugin-vue'
-import babel from '@rollup/plugin-babel'
-import resolve from '@rollup/plugin-node-resolve'
-import virtual from '@baleada/rollup-plugin-virtual'
-import createFilesToIndex from '@baleada/source-transform-files-to-index'
+import { configureable } from '@baleada/prepare'
 
-const srcIndexTest = ({ id }) => /src\/(?:components\/|symbols\/|)[^\/]+.(?:js|vue)$/.test(id),
-      srcFilesToIndex = createFilesToIndex({ test: srcIndexTest }),
-      componentsIndexTest = ({ id }) => /src\/components\/[^\/]+.vue$/.test(id),
-      componentsFilesToIndex = createFilesToIndex({ test: componentsIndexTest }),
-      symbolsIndexTest = ({ id }) => /src\/symbols\/[^\/]+.js$/.test(id),
-      symbolsFilesToIndex = createFilesToIndex({ test: symbolsIndexTest }),
-      utilIndexTest = ({ id }) => /src\/util\/[^\/]+.(?:js|vue)$/.test(id),
-      utilFilesToIndex = createFilesToIndex({ test: utilIndexTest })
-
-const external = [
-        '@baleada/vue-composition',
-        '@baleada/vue-features',
-        'vue',
-        /@babel\/runtime/,
-      ],
-      plugins = [
-        resolve(),
-        vue(),
-        virtual({
-          test: ({ id }) => id.endsWith('src/index.js'),
-          transform: srcFilesToIndex,
-        }),
-        virtual({
-          test: ({ id }) => id.endsWith('src/components'),
-          transform: componentsFilesToIndex,
-        }),
-        virtual({
-          test: ({ id }) => id.endsWith('src/symbols'),
-          transform: symbolsFilesToIndex,
-        }),
-        virtual({
-          test: ({ id }) => id.endsWith('src/util'),
-          transform: utilFilesToIndex,
-        }),
-        babel({
-          exclude: 'node_modules/**',
-          babelHelpers: 'runtime',
-        }),
-      ]
+const shared = configureable('rollup')
+        .external([
+          'vue',
+          '@baleada/vue-composition',
+          '@baleada/vue-features',
+        ])
+        .resolve()
+        .vue()
+        .virtualIndex('src/index.js', { test: ({ id }) => /src\/(?:components\/|symbols\/|)[^\/]+.(?:js|vue)$/.test(id) })
+        .virtualIndex('src/components')
+        .virtualIndex('src/symbols')
+        .virtualIndex('src/util'),
+      esm = shared
+        .delete({ targets: 'lib/*', verbose: true })
+        .input('src/index.js')
+        .esm({ file: 'lib/index.js', target: 'browser' })
+        .configure(),
+      pluginEsm = shared
+        .delete({ targets: 'plugin/*', verbose: true })
+        .input('src/plugin.js')
+        .esm({ file: 'plugin/index.js', target: 'browser' })
+        .configure()
 
 export default [
-  {
-    external,
-    input: 'src/index.js',
-    output: { file: 'lib/index.js', format: 'esm' },
-    plugins,
-  },
-  {
-    external,
-    input: 'src/plugin.js',
-    output: { file: 'plugin/index.js', format: 'esm' },
-    plugins,
-  },
+  esm,
+  pluginEsm,
 ]
