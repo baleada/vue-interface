@@ -39,7 +39,7 @@
       :style="interfaceStyles"
     />
     <section
-      class="contents"
+      class="baleada-interface-contents"
       :class="contentsClasses"
       :style="contentsStyles"
     >
