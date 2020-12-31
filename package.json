@@ -49,8 +49,8 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
-    "@baleada/vue-composition": "^0.8.9",
-    "@baleada/vue-features": "^0.5.1",
+    "@baleada/vue-composition": "^0.8.11",
+    "@baleada/vue-features": "^0.5.3",
     "vue": "^3.0.4"
   }
 }
