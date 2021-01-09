@@ -3,17 +3,9 @@
   "version": "0.7.5",
   "description": "Vue user interface components for the Baleada toolkit",
   "type": "module",
-  "main": "lib/index.cjs",
   "module": "lib/index.js",
   "exports": {
-    ".": {
-      "require": "./lib/index.cjs",
-      "import": "./lib/index.js"
-    },
-    "./plugin": {
-      "require": "./plugin/index.cjs",
-      "import": "./plugin/index.js"
-    }
+    "import": "./lib/index.js"
   },
   "scripts": {
     "prepare": "rollup --config rollup.config.js",
@@ -40,9 +32,10 @@
   "homepage": "https://baleada.netlify.com",
   "sideEffects": false,
   "devDependencies": {
-    "@baleada/prepare": "^0.4.15",
+    "@baleada/prepare": "^0.4.34",
     "@vue/compiler-sfc": "^3.0.4",
     "rollup": "^2.35.1",
+    "tailwindcss": "^2.0.2",
     "uvu": "^0.5.1",
     "vite": "^1.0.0-rc.13",
     "vue-router": "^4.0.1"
