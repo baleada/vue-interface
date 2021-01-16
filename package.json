@@ -43,7 +43,7 @@
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@baleada/vue-composition": "^0.8.13",
-    "@baleada/vue-features": "^0.5.7",
+    "@baleada/vue-features": "^0.5.9",
     "vue": "^3.0.4"
   }
 }
