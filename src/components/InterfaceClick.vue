@@ -1,9 +1,9 @@
 <template>
-  <!-- Attrs and listeners fall through to the root automatically -->
-  <!-- Explictly binding `to` here as a solution to a RouterLink bug that I haven't been able to pin down -->
+  <!-- TODO: why is `to` bound? -->
   <component
     :is="tag"
     :to="attrs.to"
+    :id="attrs.id"
     class="baleada-interface-click"
     :class="interfaceClasses"
     :style="rootStyles"
