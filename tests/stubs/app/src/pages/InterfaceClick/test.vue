@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { InterfaceClick } from '/@src/components'
+import { InterfaceClick } from '@src/components'
 
 export default {
   components: {

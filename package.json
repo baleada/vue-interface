@@ -32,18 +32,18 @@
   "homepage": "https://baleada.netlify.com",
   "sideEffects": false,
   "devDependencies": {
-    "@baleada/prepare": "^0.4.34",
+    "@baleada/prepare": "^0.4.42",
     "@vue/compiler-sfc": "^3.0.4",
     "rollup": "^2.35.1",
     "tailwindcss": "^2.0.2",
     "uvu": "^0.5.1",
-    "vite": "^1.0.0-rc.13",
+    "vite": "^2.0.0-beta.16",
     "vue-router": "^4.0.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.12.5",
     "@baleada/vue-composition": "^0.8.13",
-    "@baleada/vue-features": "^0.5.10",
+    "@baleada/vue-features": "^0.8.0",
     "vue": "^3.0.4"
   }
 }
